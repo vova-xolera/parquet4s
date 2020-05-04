@@ -261,9 +261,17 @@ class ParquetStreamsITSpec
   }
 
   it should "write partitioned data" in {
-    val flow = ParquetPartitioningFlow.builder[Data](tempPathString).build()
-    val fut = Source(data).via(flow).runWith(Sink.seq)
-    fut.map(_ should be(data))
+    val flow = ParquetPartitioningFlow.builder[Data](tempPathString)
+      .withMaxCount(writeOptions.rowGroupSize)
+      .withMaxDuration(50.millis)
+      .addPartitionBy(_.s) // TODO can't be like that :(
+      .build()
+
+    for {
+      writtenData <- Source(data).via(flow).runWith(Sink.seq)
+    } yield {
+      writtenData should be(data)
+    }
   }
 
   override def afterAll(): Unit = {

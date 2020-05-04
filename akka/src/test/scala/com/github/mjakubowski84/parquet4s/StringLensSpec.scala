@@ -19,11 +19,11 @@ class StringLensSpec extends AnyFlatSpec with Matchers {
   )
 
   "StringLens" should "extract String field from a long path" in {
-      StringLens[Person](person, "address.street.name") should be("Broad St")
+    StringLens[Person](person, "address.street.name") should be("Broad St")
   }
 
   it should "extract String field from a short path" in {
-      StringLens[Person](person, "name") should be("Joe")
+    StringLens[Person](person, "name") should be("Joe")
   }
 
   it should "fail to extract Option field" in {
@@ -40,12 +40,13 @@ class StringLensSpec extends AnyFlatSpec with Matchers {
 
   it should "fail to extract non-existing field" in {
     val e = intercept[IllegalArgumentException](StringLens[Person](person, "address.state"))
-    e.getMessage should be(s"Invalid element at path 'address'. Field 'state' does not exist.")
+    println(e.getMessage)
+    e.getMessage should be(s"Invalid element at path 'address'. Field 'address.state' does not exist.")
   }
 
   it should "fail to read a child from a String field" in {
     val e = intercept[IllegalArgumentException](StringLens[Person](person, "name.[0]"))
-    e.getMessage should be(s"Invalid element at path 'name'. Attempted to access field '[0]' from String.")
+    e.getMessage should be(s"Invalid element at path 'name'. Attempted to access child field 'name.[0]' from parent String.")
   }
 
   it should "fail to extract Product" in {

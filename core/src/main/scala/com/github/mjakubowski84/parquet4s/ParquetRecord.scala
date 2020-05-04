@@ -77,6 +77,7 @@ class RowParquetRecord private extends ParquetRecord {
 
   override def write(schema: Type, recordConsumer: RecordConsumer): Unit = {
     val groupSchema = schema.asGroupType()
+    // TODO probably we should not start (and end) a group if there are no fields to write
     recordConsumer.startGroup()
     values.foreach {
       case (_, NullValue) =>
