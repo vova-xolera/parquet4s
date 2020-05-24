@@ -261,10 +261,10 @@ class ParquetStreamsITSpec
   }
 
   it should "write partitioned data" in {
-    val flow = ParquetPartitioningFlow.builder[Data](tempPathString)
+    val flow = ParquetStreams.viaParquet[Data](tempPathString)
       .withMaxCount(writeOptions.rowGroupSize)
-      .withMaxDuration(50.millis)
-      .addPartitionBy(_.s) // TODO can't be like that :(
+      .withMaxDuration(100.millis)
+      .withPartitionBy("s")
       .build()
 
     for {
